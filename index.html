@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>ICG Task Log</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📋</text></svg>">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif; background: #f5f6f8; color: #1a1a1a; padding: 16px; max-width: 900px; margin: 0 auto; -webkit-text-size-adjust: 100%; }
+  h1 { font-size: 18px; color: #0C447C; margin-bottom: 4px; }
+  .guide { font-size: 12px; color: #555; margin-bottom: 14px; line-height: 1.6; }
+  .guide b { color: #0C447C; }
+  .glossary { background: #eef4fa; border-radius: 6px; padding: 10px 14px; margin-bottom: 16px; font-size: 12px; line-height: 1.7; color: #333; }
+  .glossary summary { font-weight: 600; color: #0C447C; cursor: pointer; font-size: 13px; -webkit-tap-highlight-color: transparent; }
+  .glossary dt { font-weight: 600; color: #0C447C; display: inline; }
+  .glossary dd { display: inline; margin: 0; }
+  .glossary dd::after { content: ""; display: block; margin-bottom: 2px; }
+  .meta { display: flex; gap: 12px; margin-bottom: 16px; flex-wrap: wrap; }
+  .meta label { font-size: 12px; color: #666; display: block; margin-bottom: 2px; }
+  .meta input { border: 1px solid #ccc; border-radius: 4px; padding: 6px 10px; font-size: 16px; -webkit-appearance: none; background: #fff; }
+  .meta input[type="text"] { width: 180px; }
+  .meta input[type="date"] { width: 150px; }
+  .save-note { font-size: 11px; color: #888; margin-bottom: 12px; }
+  .save-note span { color: #548235; font-weight: 600; }
+  .table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; margin-bottom: 12px; }
+  table { width: 100%; min-width: 640px; border-collapse: collapse; background: #fff; border-radius: 6px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,.08); }
+  th { background: #0C447C; color: #fff; font-size: 12px; font-weight: 600; text-align: left; padding: 8px 6px; white-space: nowrap; }
+  td { border-bottom: 1px solid #eee; padding: 4px 6px; font-size: 13px; vertical-align: top; }
+  td input, td select, td textarea { width: 100%; border: none; font-size: 16px; font-family: inherit; background: transparent; outline: none; resize: none; -webkit-appearance: none; }
+  td textarea { min-height: 36px; line-height: 1.4; }
+  td select { cursor: pointer; font-size: 14px; background: transparent; }
+  td input:focus, td select:focus, td textarea:focus { background: #f0f7ff; border-radius: 3px; }
+  .col-date { width: 100px; }
+  .col-cat { width: 58px; }
+  .col-status { width: 90px; }
+  .col-note { width: 140px; }
+  .col-del { width: 32px; }
+  .actions { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px; }
+  button { padding: 10px 16px; border: none; border-radius: 6px; font-size: 14px; cursor: pointer; font-family: inherit; -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
+  .btn-add { background: #0C447C; color: #fff; }
+  .btn-send { background: #548235; color: #fff; font-weight: 600; padding: 10px 24px; }
+  .btn-del { background: #eee; color: #888; font-size: 16px; padding: 2px 8px; border-radius: 4px; line-height: 1; }
+  .btn-print { background: #BF8F00; color: #fff; }
+  .btn-clear { background: #eee; color: #333; }
+  .toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: #333; color: #fff; padding: 10px 20px; border-radius: 20px; font-size: 13px; opacity: 0; transition: opacity .3s; pointer-events: none; z-index: 999; }
+  .toast.show { opacity: 1; }
+  footer { margin-top: 24px; padding-top: 12px; border-top: 1px solid #ddd; font-size: 11px; color: #aaa; text-align: center; }
+  @media print {
+    body { background: #fff; padding: 0; }
+    button, .actions, .btn-del, .guide, .glossary, .save-note, footer { display: none !important; }
+    .meta input { border: none; padding: 0; }
+    table { box-shadow: none; }
+  }
+  @media (max-width: 700px) {
+    .meta { flex-direction: column; gap: 8px; }
+    .meta input[type="text"] { width: 100%; }
+    th, td { padding: 4px 4px; font-size: 12px; }
+    th { font-size: 10px; }
+  }
+</style>
+</head>
+<body>
+
+<h1>ICG Weekly Task Log</h1>
+<p class="guide">Log your tasks as you go during the week. When done, hit <b>Send</b> to copy a summary to your clipboard, then paste it to Quynh via Zalo, email, or Microsoft Teams.</p>
+
+<details class="glossary">
+  <summary>Codebook</summary>
+  <dl>
+    <dt>FC (Functional Contribution)</dt>
+    <dd> — Your regular, recurring duties from your job description. Examples: client meetings, daily follow-ups, preparing reports, responding to client requests.</dd>
+    <dt>OC (Organizational Contribution)</dt>
+    <dd> — Cross-functional or improvement initiatives beyond your daily job. Examples: helping build a new process, contributing to a company-wide project, proposing a new idea.</dd>
+    <dt>Status options:</dt>
+    <dd> <b>Planned</b> = scheduled but not started. <b>In progress</b> = actively working on it. <b>Done</b> = completed. <b>Blocked</b> = stuck, waiting on someone or something else.</dd>
+  </dl>
+</details>
+
+<div class="meta">
+  <div><label>Your name</label><input type="text" id="name" placeholder="e.g. Nguyen Phi"></div>
+  <div><label>Week</label><input type="text" id="week" value="24-28 Mar 2026"></div>
+  <div><label>From</label><input type="date" id="dateFrom" value="2026-03-24"></div>
+  <div><label>To</label><input type="date" id="dateTo" value="2026-03-28"></div>
+</div>
+
+<p class="save-note"><span>Auto-saved</span> — your data stays on this device even if you close the browser.</p>
+
+<div class="table-wrap">
+<table id="logTable">
+  <thead>
+    <tr>
+      <th class="col-date">Date</th>
+      <th class="col-cat">FC/OC</th>
+      <th>Task</th>
+      <th class="col-status">Status</th>
+      <th class="col-note">Notes</th>
+      <th class="col-del"></th>
+    </tr>
+  </thead>
+  <tbody id="tbody"></tbody>
+</table>
+</div>
+
+<div class="actions">
+  <button id="btnAdd" class="btn-add">+ Add row</button>
+  <button id="btnSend" class="btn-send">Send</button>
+  <button id="btnPrint" class="btn-print">Print / PDF</button>
+  <button id="btnClear" class="btn-clear">Clear all</button>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<footer>ICG — VNDIRECT Securities</footer>
+
+<script>
+(function() {
+  var STORAGE_KEY = 'icg_task_log';
+  var tbody = document.getElementById('tbody');
+  var today = new Date().toISOString().slice(0,10);
+
+  function save() {
+    var data = {
+      name: document.getElementById('name').value,
+      week: document.getElementById('week').value,
+      dateFrom: document.getElementById('dateFrom').value,
+      dateTo: document.getElementById('dateTo').value,
+      rows: []
+    };
+    var rows = tbody.querySelectorAll('tr');
+    for (var i = 0; i < rows.length; i++) {
+      var r = rows[i];
+      data.rows.push({
+        date: r.querySelector('input[type="date"]').value,
+        cat: r.querySelectorAll('select')[0].value,
+        task: r.querySelectorAll('textarea')[0].value,
+        status: r.querySelectorAll('select')[1].value,
+        note: r.querySelectorAll('textarea')[1] ? r.querySelectorAll('textarea')[1].value : ''
+      });
+    }
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); } catch(e) {}
+  }
+
+  function load() {
+    try {
+      var raw = localStorage.getItem(STORAGE_KEY);
+      if (!raw) return null;
+      return JSON.parse(raw);
+    } catch(e) { return null; }
+  }
+
+  function addRow(date, cat, task, status, note) {
+    var tr = document.createElement('tr');
+
+    var td1 = document.createElement('td');
+    td1.className = 'col-date';
+    var inp = document.createElement('input');
+    inp.type = 'date';
+    inp.value = date || today;
+    td1.appendChild(inp);
+
+    var td2 = document.createElement('td');
+    td2.className = 'col-cat';
+    var sel1 = document.createElement('select');
+    var o1a = document.createElement('option'); o1a.textContent = 'FC'; o1a.value = 'FC';
+    var o1b = document.createElement('option'); o1b.textContent = 'OC'; o1b.value = 'OC';
+    if (cat === 'OC') o1b.selected = true; else o1a.selected = true;
+    sel1.appendChild(o1a); sel1.appendChild(o1b);
+    td2.appendChild(sel1);
+
+    var td3 = document.createElement('td');
+    var ta1 = document.createElement('textarea');
+    ta1.placeholder = 'What did you work on?';
+    ta1.rows = 1;
+    ta1.value = task || '';
+    td3.appendChild(ta1);
+
+    var td4 = document.createElement('td');
+    td4.className = 'col-status';
+    var sel2 = document.createElement('select');
+    var statuses = ['Planned','In progress','Done','Blocked'];
+    for (var i = 0; i < statuses.length; i++) {
+      var opt = document.createElement('option');
+      opt.value = statuses[i]; opt.textContent = statuses[i];
+      if (statuses[i] === (status || 'Planned')) opt.selected = true;
+      sel2.appendChild(opt);
+    }
+    td4.appendChild(sel2);
+
+    var td5 = document.createElement('td');
+    td5.className = 'col-note';
+    var ta2 = document.createElement('textarea');
+    ta2.placeholder = 'Optional...';
+    ta2.rows = 1;
+    ta2.value = note || '';
+    td5.appendChild(ta2);
+
+    var td6 = document.createElement('td');
+    td6.className = 'col-del';
+    var btn = document.createElement('button');
+    btn.className = 'btn-del';
+    btn.textContent = '\u00D7';
+    btn.setAttribute('data-action', 'delete');
+    td6.appendChild(btn);
+
+    tr.appendChild(td1);
+    tr.appendChild(td2);
+    tr.appendChild(td3);
+    tr.appendChild(td4);
+    tr.appendChild(td5);
+    tr.appendChild(td6);
+    tbody.appendChild(tr);
+    return tr;
+  }
+
+  function sendSummary() {
+    var name = document.getElementById('name').value || '(No name)';
+    var week = document.getElementById('week').value;
+    var rows = tbody.querySelectorAll('tr');
+    var text = 'TASK LOG \u2014 ' + name + ' \u2014 Week ' + week + '\n';
+    text += '================================================\n\n';
+
+    if (rows.length === 0) {
+      text += '(No tasks logged)\n';
+    } else {
+      for (var i = 0; i < rows.length; i++) {
+        var r = rows[i];
+        var d = r.querySelector('input[type="date"]').value;
+        var c = r.querySelectorAll('select')[0].value;
+        var t = r.querySelectorAll('textarea')[0].value;
+        var s = r.querySelectorAll('select')[1].value;
+        var n = r.querySelectorAll('textarea')[1] ? r.querySelectorAll('textarea')[1].value : '';
+        if (!t.trim()) continue;
+        var icon = s==='Done' ? '[DONE]' : s==='In progress' ? '[WIP]' : s==='Blocked' ? '[BLOCKED]' : '[PLAN]';
+        text += d + '  |  [' + c + ']  ' + icon + '\n';
+        text += '  ' + t + '\n';
+        if (n.trim()) text += '  -> ' + n + '\n';
+        text += '\n';
+      }
+    }
+
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text)
+        .then(function() { showToast('Copied! Now paste to Zalo / email / Teams.'); })
+        .catch(function() { fallbackCopy(text); });
+    } else {
+      fallbackCopy(text);
+    }
+  }
+
+  function fallbackCopy(text) {
+    var ta = document.createElement('textarea');
+    ta.value = text;
+    ta.style.position = 'fixed';
+    ta.style.left = '-9999px';
+    ta.style.top = '0';
+    ta.setAttribute('readonly', '');
+    document.body.appendChild(ta);
+
+    var range = document.createRange();
+    range.selectNodeContents(ta);
+    var sel = window.getSelection();
+    sel.removeAllRanges();
+    sel.addRange(range);
+    ta.setSelectionRange(0, ta.value.length);
+
+    try {
+      document.execCommand('copy');
+      showToast('Copied! Now paste to Zalo / email / Teams.');
+    } catch(e) {
+      showToast('Could not copy automatically. Please select all and copy.');
+    }
+    document.body.removeChild(ta);
+  }
+
+  function showToast(msg) {
+    var t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(function() { t.classList.remove('show'); }, 2500);
+  }
+
+  document.addEventListener('click', function(e) {
+    var target = e.target;
+    if (target.id === 'btnAdd' || target.closest('#btnAdd')) {
+      addRow();
+      save();
+    } else if (target.id === 'btnSend' || target.closest('#btnSend')) {
+      save();
+      sendSummary();
+    } else if (target.id === 'btnPrint' || target.closest('#btnPrint')) {
+      window.print();
+    } else if (target.id === 'btnClear' || target.closest('#btnClear')) {
+      if (confirm('Clear all rows? This cannot be undone.')) {
+        tbody.innerHTML = '';
+        addRow(); addRow(); addRow();
+        save();
+      }
+    } else if (target.getAttribute('data-action') === 'delete') {
+      var row = target.closest('tr');
+      if (row) { row.parentNode.removeChild(row); save(); }
+    }
+  });
+
+  document.addEventListener('input', function() { save(); });
+  document.addEventListener('change', function() { save(); });
+
+  var saved = load();
+  if (saved && saved.rows && saved.rows.length > 0) {
+    document.getElementById('name').value = saved.name || '';
+    document.getElementById('week').value = saved.week || '';
+    document.getElementById('dateFrom').value = saved.dateFrom || '';
+    document.getElementById('dateTo').value = saved.dateTo || '';
+    for (var i = 0; i < saved.rows.length; i++) {
+      var r = saved.rows[i];
+      addRow(r.date, r.cat, r.task, r.status, r.note);
+    }
+  } else {
+    addRow(); addRow(); addRow();
+  }
+})();
+</script>
+</body>
+</html>
